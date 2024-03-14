@@ -14,6 +14,9 @@ data_save_dir: ${model_save_dir}/data
 model_path: ${model_dir}/model.py
 model_config_path: ${model_dir}/configs/${target_buf}.yaml
 
+c_templates_dir: ${model_dir}/c_templates
+c_save_dir: ${model_save_dir}/c_code
+
 wandb_project_name: "NN_from_scratch"
 
 train_models: true

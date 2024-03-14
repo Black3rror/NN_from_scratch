@@ -6,6 +6,7 @@ import hydra
 import wandb
 
 from nn_from_scratch.model.model import ModelSupervisor
+from nn_from_scratch.model.model_converter import convert_model_to_c
 from nn_from_scratch.model.utils import get_abs_path
 
 
@@ -76,6 +77,9 @@ def generate_models(cfg):
         supervisor.save_weights(os.path.join(cfg.model_save_dir, 'tf/weights/weights_last'))
         print("Done\n")
         supervisor.log_model_to_wandb(os.path.join(cfg.model_save_dir, "tf/model"), "{}".format(target.replace("/", "_")))
+
+        print("Converting the model to C ...", end=" ")
+        convert_model_to_c(os.path.join(cfg.model_save_dir, "tf/model/keras_format/model.keras"), cfg.c_templates_dir, cfg.c_save_dir)
 
         print("Saving equality check data to the directory: {} ...".format(cfg.data_save_dir), end=" ")
         supervisor.save_eqcheck_data(cfg.n_eqcheck_data, cfg.data_save_dir)
