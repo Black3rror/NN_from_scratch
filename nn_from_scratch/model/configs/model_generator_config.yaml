@@ -1,0 +1,23 @@
+targets: [
+  setting_1,
+  setting_2,
+]
+
+# The script will iteratively populate the following parameters for each item in the 'targets' collection
+target_buf: null
+time_tag: null
+
+model_dir: nn_from_scratch/model
+model_save_dir: saved_models/${time_tag}
+data_save_dir: ${model_save_dir}/data
+
+model_path: ${model_dir}/model.py
+model_config_path: ${model_dir}/configs/${target_buf}.yaml
+
+wandb_project_name: "NN_from_scratch"
+
+train_models: true
+evaluate_models: true
+measure_execution_time: true
+
+n_eqcheck_data: 10            # This number of samples will be saved and later used for equivalence check of model on PC and MCU

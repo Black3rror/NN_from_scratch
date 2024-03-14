@@ -1,0 +1,12 @@
+denses_params: [16, 8, 2]
+activation: "relu"
+epochs: 50
+batch_size: 32
+dataset:
+  name: "sinus"
+  path: "nn_from_scratch/model/data/${dataset.name}/data.py"
+  args:
+    n_samples: 10000
+    test_ratio: 0.2
+    random_seed: 42
+random_seed: 42

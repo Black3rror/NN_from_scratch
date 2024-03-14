@@ -1,5 +1,5 @@
 # project specific
-
+/saved_models/
 
 # docs
 docs/site/
@@ -88,6 +88,9 @@ instance/
 
 # Scrapy stuff:
 .scrapy
+
+# Hydra stuff:
+outputs/
 
 # Sphinx documentation
 docs/_build/
