@@ -22,7 +22,7 @@ class ModelSupervisor():
         self.batch_size = 32
         self.dataset_info = {
             "name": "sinus",
-            "path": "nn_from_scratch/model/data/sinus/data.py",
+            "path": "nn_from_scratch/model/generate/data/sinus/data.py",
             "args": {
                 "n_samples": 1000,
                 "test_ratio": 0.2,

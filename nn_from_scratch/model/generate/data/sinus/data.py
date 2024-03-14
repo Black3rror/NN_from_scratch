@@ -1,6 +1,6 @@
 import numpy as np
 
-from nn_from_scratch.model.data.data_template import DatasetSupervisorTemplate
+from nn_from_scratch.model.generate.data.data_template import DatasetSupervisorTemplate
 
 
 class DatasetSupervisor(DatasetSupervisorTemplate):

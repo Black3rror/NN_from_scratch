@@ -5,14 +5,14 @@ import os
 import hydra
 import wandb
 
-from nn_from_scratch.model.model import ModelSupervisor
-from nn_from_scratch.model.model_converter import convert_model_to_c
-from nn_from_scratch.model.utils import get_abs_path
+from nn_from_scratch.model.convert.model_converter import convert_model_to_c
+from nn_from_scratch.model.generate.model import ModelSupervisor
+from nn_from_scratch.model.generate.utils import get_abs_path
 
 
 logging.getLogger('tensorflow').setLevel(logging.ERROR)
 os.environ["WANDB_SILENT"] = "true"
-config_file_path = "nn_from_scratch/model/configs/model_generator_config.yaml"
+config_file_path = "nn_from_scratch/model/generate/configs/model_generator_config.yaml"
 config_file_path = get_abs_path(config_file_path)
 
 
@@ -79,7 +79,8 @@ def generate_models(cfg):
         supervisor.log_model_to_wandb(os.path.join(cfg.model_save_dir, "tf/model"), "{}".format(target.replace("/", "_")))
 
         print("Converting the model to C ...", end=" ")
-        convert_model_to_c(os.path.join(cfg.model_save_dir, "tf/model/keras_format/model.keras"), cfg.c_templates_dir, cfg.c_save_dir)
+        convert_model_to_c(os.path.join(cfg.model_save_dir, "tf/model/keras_format/model.keras"), cfg.c_templates_dir, cfg.c_save_dir, verbose=False)
+        print("Done\n")
 
         print("Saving equality check data to the directory: {} ...".format(cfg.data_save_dir), end=" ")
         supervisor.save_eqcheck_data(cfg.n_eqcheck_data, cfg.data_save_dir)

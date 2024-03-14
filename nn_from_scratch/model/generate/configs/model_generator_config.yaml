@@ -7,14 +7,14 @@ targets: [
 target_buf: null
 time_tag: null
 
-model_dir: nn_from_scratch/model
+model_dir: nn_from_scratch/model/generate
 model_save_dir: saved_models/${time_tag}
 data_save_dir: ${model_save_dir}/data
 
 model_path: ${model_dir}/model.py
 model_config_path: ${model_dir}/configs/${target_buf}.yaml
 
-c_templates_dir: ${model_dir}/c_templates
+c_templates_dir: nn_from_scratch/model/convert/c_templates
 c_save_dir: ${model_save_dir}/c_code
 
 wandb_project_name: "NN_from_scratch"

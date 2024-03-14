@@ -5,9 +5,10 @@ import numpy as np
 import tensorflow as tf
 
 
-def convert_model_to_c(model_path, templates_dir, save_dir):
+def convert_model_to_c(model_path, templates_dir, save_dir, verbose=True):
     model = tf.keras.models.load_model(model_path)
-    model.summary()
+    if verbose:
+        model.summary()
 
     input_size = model.layers[0].input.shape[1]
 
