@@ -84,6 +84,9 @@ remove_environment:
 
 # put project specific rules here
 
+generate_models:
+	$(PYTHON_INTERPRETER) -m nn_from_scratch.model.generate.model_generator
+
 #################################################################################
 # Self Documenting Commands                                                     #
 #################################################################################

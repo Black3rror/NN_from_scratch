@@ -72,17 +72,17 @@ def generate_models(cfg):
                 print("Continuing without evaluation")
                 continue
 
-        print("Saving model and weights to the directory: {} ...".format(cfg.model_save_dir), end=" ")
+        print("Saving model and weights to the directory: {} ...".format(cfg.model_save_dir), end=" ", flush=True)
         supervisor.save_model(os.path.join(cfg.model_save_dir, "tf/model"))
         supervisor.save_weights(os.path.join(cfg.model_save_dir, 'tf/weights/weights_last'))
         print("Done\n")
         supervisor.log_model_to_wandb(os.path.join(cfg.model_save_dir, "tf/model"), "{}".format(target.replace("/", "_")))
 
-        print("Converting the model to C ...", end=" ")
+        print("Converting the model to C ...", end=" ", flush=True)
         convert_model_to_c(os.path.join(cfg.model_save_dir, "tf/model/keras_format/model.keras"), cfg.c_templates_dir, cfg.c_save_dir, verbose=False)
         print("Done\n")
 
-        print("Saving equality check data to the directory: {} ...".format(cfg.data_save_dir), end=" ")
+        print("Saving equality check data to the directory: {} ...".format(cfg.data_save_dir), end=" ", flush=True)
         supervisor.save_eqcheck_data(cfg.n_eqcheck_data, cfg.data_save_dir)
         print("Done\n")
 
@@ -107,7 +107,7 @@ def generate_models(cfg):
             model_info["execution_time"] = execution_time
         model_info["wandb_name"] = wandb_name
 
-        print("Saving the model info in the directory: {} ...".format(cfg.model_save_dir), end=" ")
+        print("Saving the model info in the directory: {} ...".format(cfg.model_save_dir), end=" ", flush=True)
         supervisor.save_model_info(model_info, cfg.model_save_dir)
         print("Done\n")
         wandb.config.update(model_info)
