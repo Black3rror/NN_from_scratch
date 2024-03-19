@@ -1,9 +1,13 @@
-#include <cstdint>
+#include <stdint.h>
 
-#define INPUT_SIZE {input_size}
-#define N_LAYERS {n_layers}
+#define INPUT_SIZE 1
+#define N_LAYERS 4
 
-{layers_size}
+#define LAYER_0_SIZE 16
+#define LAYER_1_SIZE 8
+#define LAYER_2_SIZE 2
+#define LAYER_3_SIZE 1
+
 
 enum ActivationType {
     LINEAR,
