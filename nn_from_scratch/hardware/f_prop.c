@@ -1,5 +1,9 @@
 #include <stdint.h>
-#include "model/convert/c_templates/model.h"
+#include "f_prop.h"
+#include <stdlib.h>
+#include <string.h>
+// for print
+#include <stdio.h>
 
 /* Activation functions */
 float relu(float x)
@@ -18,21 +22,16 @@ float activation_func(enum ActivationType activation, float x)
     case RELU:
         return relu(x);
     case LINEAR:
-        return relu(x);
+        return linear(x);
     default:
+        fprintf(stderr, "An error occurred: Unkown activation type \n");
+        exit(EXIT_FAILURE); // Indicates failure to the operating system
         break;
     }
 }
 
-/*
-  dense function
-  Output_layer_x = layer_activation(layer_x_weight * input + layer_x_bias)
-
-  get output after doing dense for each layer
-*/
-
-// Dense computation for a single layer
-void dense(float *input, float *weights, float *biases, float *output, int input_size, int output_size, enum ActivationType activation)
+/* Dense computation for a single layer */
+float *dense(float *input, float *weights, float *biases, float *output, int input_size, int output_size, enum ActivationType activation)
 {
     for (int i = 0; i < output_size; i++)
     {
@@ -41,22 +40,50 @@ void dense(float *input, float *weights, float *biases, float *output, int input
         for (int j = 0; j < input_size; j++)
         {
             // Index expression to access correct weight connected to neuron
-            // TODO: Need double-check if correct
             sum += input[j] * weights[i * input_size + j];
         }
+        // add bias
         sum += biases[i];
         // apply activation
         output[i] = activation_func(activation, sum);
     }
+    return output;
 }
 
-// main function for now
+/* Helper function to f_prop */
+float *f_prop_helper(float *input, int input_size, int i, int N)
+{
+    if (i == N)
+    {
+        // stop
+        return input; // Input is last layers output (the final result).
+    }
+    // allocate output
+    float *output = (float *)malloc(layers_size[i] * sizeof(float));
+    output = dense(input, layers_weights[i], layers_biases[i], output, input_size, layers_size[i], layers_activation[i]);
+
+    free(input); // free input and use output as input for the next layer
+    return f_prop_helper(output, layers_size[i], i + 1, N);
+}
+/* forward propagation */
+float *f_prop(float *input, int input_size, int N)
+{
+    // copy input into start value, so input value does not get free'd
+    float *start_input = (float *)malloc(sizeof(float) * input_size);
+    memcpy(start_input, input, sizeof(float) * input_size);
+    float *output = f_prop_helper(start_input, input_size, 0, N);
+    return output;
+}
+
+/* main function just for testing */
 int main()
 {
 
-    /*  NOTES:
-     * create loop to apply dense computation for all layers
-     * correctly allocate and free memory - use inplace computation to minimize memory usage
-     * test with a small input
-     */
+    float input = (float)360;
+    printf("input: %f \n", input);
+    float output = *f_prop(&input, INPUT_SIZE, N_LAYERS);
+
+    printf("output: %f \n", output);
+
+    return 0;
 }
