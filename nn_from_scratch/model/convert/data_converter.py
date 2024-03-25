@@ -5,7 +5,7 @@ import numpy as np
 import tensorflow as tf
 
 
-def convert_data_to_c(data_x, data_y, templates_dir, save_dir, file_name="data"):
+def convert_data_to_c(data_x, data_y, templates_dir, save_dir, file_name="data", var_name="samples"):
     """
     Convert the data to C format and save it to the specified directory.
 
@@ -28,8 +28,10 @@ def convert_data_to_c(data_x, data_y, templates_dir, save_dir, file_name="data")
     data_h = data_h.replace("{n_samples}", str(data_x.shape[0]))
     data_h = data_h.replace("{input_size}", str(data_x.shape[1]))
     data_h = data_h.replace("{output_size}", str(data_y.shape[1]))
+    data_h = data_h.replace("{var_name}", var_name)
     data_c = data_c.replace("{input_size}", str(data_x.shape[1]))
     data_c = data_c.replace("{output_size}", str(data_y.shape[1]))
+    data_c = data_c.replace("{var_name}", var_name)
     data_c = data_c.replace("{file_name}", file_name)
 
     samples_x = "\n"
