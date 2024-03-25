@@ -23,3 +23,4 @@ evaluate_models: true
 measure_execution_time: true
 
 n_eqcheck_data: 10            # This number of samples will be saved and later used for equivalence check of model on PC and MCU
+n_ft_data: 1000              # This number of samples will be used for fine-tuning of the model (on device training)

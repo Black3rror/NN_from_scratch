@@ -113,6 +113,7 @@ def generate_models(cfg):
 
         # load data and create model
         dataset = imported_module.DatasetSupervisor(**dataset_info["args"], modify_dataset=True)
+        ft_dataset = imported_module.DatasetSupervisor(**dataset_info["args"], modify_dataset=False)
 
         input_size = dataset.feature_size
         output_size = dataset.num_labels
@@ -163,10 +164,23 @@ def generate_models(cfg):
         convert_model_to_c(os.path.join(cfg.model_save_dir, "tf/model/keras_format/model.keras"), cfg.c_templates_dir, cfg.c_save_dir, verbose=False)
         print("Done\n")
 
-        print("Converting the data to C ...", end=" ", flush=True)
+        if dataset.test_x is not None and dataset.test_y is not None:
+            print("Converting the true data to C ...", end=" ", flush=True)
+            true_data_x = dataset.test_x[:cfg.n_eqcheck_data]
+            true_data_y = dataset.test_y[:cfg.n_eqcheck_data]
+            convert_data_to_c(true_data_x, true_data_y, cfg.c_templates_dir, cfg.c_save_dir, file_name="true_data")
+            print("Done\n")
+
+        print("Converting the equality check data to C ...", end=" ", flush=True)
         eq_data_x = dataset.train_x[:cfg.n_eqcheck_data]
         eq_data_y = model.predict(eq_data_x, verbose=0)
         convert_data_to_c(eq_data_x, eq_data_y, cfg.c_templates_dir, cfg.c_save_dir, file_name="eqcheck_data")
+        print("Done\n")
+
+        print("Converting the fine-tuning data to C ...", end=" ", flush=True)
+        ft_data_x = ft_dataset.train_x[:cfg.n_ft_data]
+        ft_data_y = ft_dataset.train_y[:cfg.n_ft_data]
+        convert_data_to_c(ft_data_x, ft_data_y, cfg.c_templates_dir, cfg.c_save_dir, file_name="ft_data")
         print("Done\n")
 
         # measure the execution time
