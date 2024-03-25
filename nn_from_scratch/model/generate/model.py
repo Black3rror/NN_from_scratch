@@ -7,7 +7,7 @@ import tensorflow as tf
 import wandb
 import yaml
 from omegaconf import OmegaConf
-from tensorflow.python.profiler import model_analyzer, option_builder
+from tensorflow.python.profiler import model_analyzer, option_builder   # type: ignore
 from wandb.keras import WandbCallback
 
 
