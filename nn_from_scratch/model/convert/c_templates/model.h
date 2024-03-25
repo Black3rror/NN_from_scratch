@@ -1,6 +1,7 @@
 #include <cstdint>
 
 #define INPUT_SIZE {input_size}
+#define OUTPUT_SIZE {output_size}
 #define N_LAYERS {n_layers}
 
 {layers_size}

@@ -256,26 +256,24 @@ class ModelSupervisor():
         return execution_time
 
 
-    def save_eqcheck_data(self, n_samples, save_dir):
+    def get_eqcheck_data(self, n_samples):
         """
-        Saves the eqcheck data as {"data_x", "data_y_pred"}
+        Returns the data_x and data_y_pred for the equality check.
 
-        The data_x has shape (samples, *input_shape) and data_y_pred has shape (samples, *output_shape).
+        The data_x has shape (n_samples, input_size) and data_y_pred has shape (n_samples, output_size).
 
         Args:
             n_samples (int): The number of samples to be saved
-            save_dir (str): The directory where the data should be saved
+
+        Returns:
+            tuple: The data_x and data_y_pred
         """
-        # sanity check
-        for data_dim_size, model_dim_size in zip(self.dataset.train_x.shape[1:], self.model.inputs[0].shape[1:]):
-            if data_dim_size != model_dim_size and model_dim_size is not None:
-                raise ValueError("The shape of the train_x doesn't match the input shape of the model.")
+        assert self.dataset.train_x.shape[1] == self.model.inputs[0].shape[1], "The shape of the train_x doesn't match the input shape of the model."
 
         data_x = self.dataset.train_x[:n_samples]
         data_y_pred = self.model.predict(data_x, verbose=0)
 
-        os.makedirs(save_dir, exist_ok=True)
-        np.savez(os.path.join(save_dir, 'eqcheck_data.npz'), data_x=data_x, data_y_pred=data_y_pred)
+        return data_x, data_y_pred
 
 
     def save_model(self, save_dir):

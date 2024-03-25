@@ -6,6 +6,15 @@ import tensorflow as tf
 
 
 def convert_model_to_c(model_path, templates_dir, save_dir, verbose=True):
+    """
+    Convert the model to C format and save it to the specified directory.
+
+    Args:
+        model_path (str): Path to the model.
+        templates_dir (str): Path to the directory with the templates.
+        save_dir (str): Path to the directory to save the converted model.
+        verbose (bool): Whether to print the summary of the model.
+    """
     model = tf.keras.models.load_model(model_path)
     if verbose:
         model.summary()
@@ -33,6 +42,7 @@ def convert_model_to_c(model_path, templates_dir, save_dir, verbose=True):
         model_c = f.read()
 
     model_h = model_h.replace("{input_size}", str(input_size))
+    model_h = model_h.replace("{output_size}", str(layers_info[-1]["n"]))
     model_h = model_h.replace("{n_layers}", str(len(layers_info)))
 
     layers_size_h = ""
@@ -78,10 +88,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_path", type=str, required=True, help="Path to the model")
     parser.add_argument("--templates_dir", type=str, default="nn_from_scratch/model/c_templates", help="Path to the directory with the templates")
-    parser.add_argument("--save_dir", type=str, required=False, help="Path to the directory to save the converted model")
+    parser.add_argument("--save_dir", type=str, default="c_files", help="Path to the directory to save the converted model")
     args = parser.parse_args()
-
-    if args.save_dir is None:
-        args.save_dir = "c_files"
 
     convert_model_to_c(args.model_path, args.templates_dir, args.save_dir)

@@ -6,6 +6,7 @@ import hydra
 import wandb
 
 from nn_from_scratch.model.convert.model_converter import convert_model_to_c
+from nn_from_scratch.model.convert.data_converter import convert_data_to_c
 from nn_from_scratch.model.generate.model import ModelSupervisor
 from nn_from_scratch.model.generate.utils import get_abs_path
 
@@ -82,8 +83,9 @@ def generate_models(cfg):
         convert_model_to_c(os.path.join(cfg.model_save_dir, "tf/model/keras_format/model.keras"), cfg.c_templates_dir, cfg.c_save_dir, verbose=False)
         print("Done\n")
 
-        print("Saving equality check data to the directory: {} ...".format(cfg.data_save_dir), end=" ", flush=True)
-        supervisor.save_eqcheck_data(cfg.n_eqcheck_data, cfg.data_save_dir)
+        print("Converting the data to C ...", end=" ", flush=True)
+        eq_data_x, eq_data_y = supervisor.get_eqcheck_data(cfg.n_eqcheck_data)
+        convert_data_to_c(eq_data_x, eq_data_y, cfg.c_templates_dir, cfg.c_save_dir)
         print("Done\n")
 
         if cfg.measure_execution_time:
