@@ -8,12 +8,12 @@ from tensorflow.python.profiler import model_analyzer, option_builder   # type: 
 from wandb.keras import WandbCallback
 
 
-def create_model(input_shape, denses_params, output_size, activation, output_activation, random_seed=None):
+def create_model(input_size, denses_params, output_size, activation, output_activation, random_seed=None):
     """
     Creates the model.
 
     Args:
-        input_shape (tuple): The shape of the input.
+        input_size (int): The size of the input.
         denses_params (list): Each element is the number of neurons of a dense layer (excluding the output layer).
         output_size (int): The size of the output.
         activation (str): The activation function of the hidden layers.
@@ -26,7 +26,7 @@ def create_model(input_shape, denses_params, output_size, activation, output_act
     model = tf.keras.Sequential()
     layers = tf.keras.layers
 
-    model.add(layers.Input(shape=input_shape))
+    model.add(layers.Input(shape=(input_size,)))
 
     for i in range(len(denses_params)):
         n = denses_params[i]

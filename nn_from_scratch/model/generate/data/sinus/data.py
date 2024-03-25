@@ -13,7 +13,7 @@ class DatasetSupervisor(DatasetSupervisorTemplate):
 
         (self.train_x, self.train_y), (self.test_x, self.test_y) = self.load_dataset(n_samples, test_ratio, random_seed)
 
-        self.feature_shape = self.train_x.shape[1:]
+        self.feature_size = 1
         self.num_labels = 1
         self.output_activation = "linear"
         self.loss_function = "mse"

@@ -114,12 +114,10 @@ def generate_models(cfg):
         # load data and create model
         dataset = imported_module.DatasetSupervisor(**dataset_info["args"])
 
-        input_shape = dataset.feature_shape
-        assert len(input_shape) == 1, "The input shape must be 1-dimensional."
-
+        input_size = dataset.feature_size
         output_size = dataset.num_labels
         output_activation = dataset.output_activation
-        model = create_model(input_shape, denses_params, output_size, activation, output_activation, random_seed)
+        model = create_model(input_size, denses_params, output_size, activation, output_activation, random_seed)
 
         # compile the model
         opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)

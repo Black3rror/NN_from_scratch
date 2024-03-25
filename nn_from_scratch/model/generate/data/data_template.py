@@ -12,14 +12,14 @@ class DatasetSupervisorTemplate:
     def __init__(self, **kwargs):
         """
         Initializes the class by setting the following attributes:
-            self.train_x (numpy.ndarray): The training data.
-            self.train_y (numpy.ndarray): The training labels.
-            self.test_x (numpy.ndarray): The test data.
-            self.test_y (numpy.ndarray): The test labels.
+            self.train_x (numpy.ndarray): The training data with shape (n_samples, feature_size).
+            self.train_y (numpy.ndarray): The training labels with shape (n_samples, num_labels).
+            self.test_x (numpy.ndarray): The test data with shape (n_samples, feature_size).
+            self.test_y (numpy.ndarray): The test labels with shape (n_samples, num_labels).
 
-            self.feature_shape (tuple): The shape of the features.
+            self.feature_size (int): The size of the features.
             self.num_labels (int): The number of labels.
-            self.output_activation (str): The name of the activation function of the output layer.
+            self.output_activation (str): The name of the activation function of the output layer. Make sure it is supported by your C code.
             self.loss_function (str | tf.keras.losses.Loss): The name of the loss function or the loss function itself.
             self.metrics (list): The list of metrics.
         """
