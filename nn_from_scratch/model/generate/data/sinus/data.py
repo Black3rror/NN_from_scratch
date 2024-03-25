@@ -4,7 +4,18 @@ from nn_from_scratch.model.generate.data.data_template import DatasetSupervisorT
 
 
 class DatasetSupervisor(DatasetSupervisorTemplate):
-    def __init__(self, n_samples, test_ratio, random_seed=None):
+    def __init__(self, n_samples, test_ratio, modify_dataset=False, noise=0.2, shift=0.5, random_seed=None):
+        """
+        Initializes the class.
+
+        Args:
+            n_samples (int): The number of samples that should be in the whole dataset (train + test).
+            test_ratio (float): The ratio of the test set.
+            modify_trainset (bool): If True, the trainset will be modified. The modification parameters are `noise` and `shift`.
+            noise (float): The noise level that should be added as modification.
+            shift (float): The shift value that should be added as modification.
+            random_seed (int): The random seed. If None, the random seed is not set.
+        """
         super().__init__()
 
         self.n_samples = n_samples
@@ -12,6 +23,11 @@ class DatasetSupervisor(DatasetSupervisorTemplate):
         self.random_seed = random_seed
 
         (self.train_x, self.train_y), (self.test_x, self.test_y) = self.load_dataset(n_samples, test_ratio, random_seed)
+
+        if modify_dataset:
+            rng = np.random.RandomState(random_seed)
+            delta = rng.rand(*self.train_y.shape) * noise + shift
+            self.train_y += delta
 
         self.feature_size = 1
         self.num_labels = 1

@@ -112,7 +112,7 @@ def generate_models(cfg):
         spec.loader.exec_module(imported_module)
 
         # load data and create model
-        dataset = imported_module.DatasetSupervisor(**dataset_info["args"])
+        dataset = imported_module.DatasetSupervisor(**dataset_info["args"], modify_dataset=True)
 
         input_size = dataset.feature_size
         output_size = dataset.num_labels

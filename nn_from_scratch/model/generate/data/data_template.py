@@ -9,7 +9,7 @@ class DatasetSupervisorTemplate:
     inherit from this class and implement its abstract functions.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, modify_dataset=False, **kwargs):
         """
         Initializes the class by setting the following attributes:
             self.train_x (numpy.ndarray): The training data with shape (n_samples, feature_size).
@@ -22,6 +22,10 @@ class DatasetSupervisorTemplate:
             self.output_activation (str): The name of the activation function of the output layer. Make sure it is supported by your C code.
             self.loss_function (str | tf.keras.losses.Loss): The name of the loss function or the loss function itself.
             self.metrics (list): The list of metrics.
+
+        Args:
+            modify_trainset (bool): If True, the trainset will be modified. The modification can be a shift in data, noise, or any other modification.
+            **kwargs: The arguments that are needed to load the dataset.
         """
         self.train_x = None
         self.train_y = None
@@ -39,6 +43,9 @@ class DatasetSupervisorTemplate:
         """
         Loads the dataset and returns it in the format ((trainX, trainY), (testX, testY)).
         The data should be in numpy float32 and shuffled.
+
+        Args:
+            **kwargs: The arguments that are needed to load the dataset.
 
         Returns:
             tuple: ((trainX, trainY), (testX, testY))
