@@ -19,7 +19,6 @@ c_save_dir: ${model_save_dir}/c_code
 
 wandb_project_name: "NN_from_scratch"
 
-train_models: true
 evaluate_models: true
 measure_execution_time: true
 
