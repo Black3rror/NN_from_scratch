@@ -56,7 +56,7 @@ class DatasetSupervisor(DatasetSupervisorTemplate):
     def _create_dataset(n_samples, random_seed=None):
         rng = np.random.RandomState(random_seed)
         x = rng.uniform(0, 2*np.pi, n_samples)
-        y = np.sin(x) / 2 + 0.5
+        y = np.sin(x)
         x = x.reshape(-1, 1)
         y = y.reshape(-1, 1)
         return x, y
