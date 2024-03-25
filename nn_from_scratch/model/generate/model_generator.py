@@ -85,7 +85,7 @@ def generate_models(cfg):
 
         print("Converting the data to C ...", end=" ", flush=True)
         eq_data_x, eq_data_y = supervisor.get_eqcheck_data(cfg.n_eqcheck_data)
-        convert_data_to_c(eq_data_x, eq_data_y, cfg.c_templates_dir, cfg.c_save_dir)
+        convert_data_to_c(eq_data_x, eq_data_y, cfg.c_templates_dir, cfg.c_save_dir, file_name="eqcheck_data")
         print("Done\n")
 
         if cfg.measure_execution_time:

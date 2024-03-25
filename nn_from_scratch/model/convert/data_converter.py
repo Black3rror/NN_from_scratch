@@ -5,7 +5,7 @@ import numpy as np
 import tensorflow as tf
 
 
-def convert_data_to_c(data_x, data_y, templates_dir, save_dir):
+def convert_data_to_c(data_x, data_y, templates_dir, save_dir, file_name="data"):
     """
     Convert the data to C format and save it to the specified directory.
 
@@ -14,6 +14,7 @@ def convert_data_to_c(data_x, data_y, templates_dir, save_dir):
         data_y (np.ndarray): Output data.
         templates_dir (str): Path to the directory with the templates.
         save_dir (str): Path to the directory to save the converted data.
+        file_name (str): Name of the file.
     """
     with open(os.path.join(templates_dir, "data.h"), "r") as f:
         data_h = f.read()
@@ -29,6 +30,7 @@ def convert_data_to_c(data_x, data_y, templates_dir, save_dir):
     data_h = data_h.replace("{output_size}", str(data_y.shape[1]))
     data_c = data_c.replace("{input_size}", str(data_x.shape[1]))
     data_c = data_c.replace("{output_size}", str(data_y.shape[1]))
+    data_c = data_c.replace("{file_name}", file_name)
 
     samples_x = "\n"
     samples_y = "\n"
@@ -40,9 +42,9 @@ def convert_data_to_c(data_x, data_y, templates_dir, save_dir):
     data_c = data_c.replace("{samples_y}", samples_y)
 
     os.makedirs(save_dir, exist_ok=True)
-    with open(os.path.join(save_dir, "data.h"), "w") as f:
+    with open(os.path.join(save_dir, "{}.h".format(file_name)), "w") as f:
         f.write(data_h)
-    with open(os.path.join(save_dir, "data.c"), "w") as f:
+    with open(os.path.join(save_dir, "{}.c".format(file_name)), "w") as f:
         f.write(data_c)
 
 
