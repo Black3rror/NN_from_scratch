@@ -162,7 +162,6 @@ def save_model(model, save_dir):
     tf.saved_model.save(model, os.path.join(save_dir, "saved_model_format"))
 
 
-@staticmethod
 def log_model_to_wandb(model_dir, model_save_name):
     """
     Logs the model to wandb.
