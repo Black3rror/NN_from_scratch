@@ -41,18 +41,14 @@ float *dense(float *input, float *weights, float *biases, float *output, int inp
         {
             // Index expression to access correct weight connected to neuron
             
-            //printf("input %f, weight %f \n", input[j],weights[i+j*(output_size)]);
 
-            // indexing for correct wiehgt
+            // indexing for correct weight
             sum+=input[j]* weights[i+j*(output_size)]; 
-            //sum += input[j] * weights[(i * input_size) + j];
         }
         // add bias
         sum += biases[i];
         // apply activation
-        output[i] = activation_func(activation, sum);
-        //printf("Neuron: %d, value: %f \n", i, output[i]);
-    }
+        output[i] = activation_func(activation, sum);    }
     return output;
 }
 
@@ -67,7 +63,6 @@ float *f_prop_helper(float *input, int input_size, int i, int N)
     // allocate output
     float *output = (float *)malloc(layers_size[i] * sizeof(float));
     output = dense(input, layers_weights[i], layers_biases[i], output, input_size, layers_size[i], layers_activation[i]);
-    //printf("-----\n");
     free(input); // free input and use output as input for the next layer
 
     return f_prop_helper(output, layers_size[i], i + 1, N);
