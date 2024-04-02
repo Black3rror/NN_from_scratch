@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include "f_prop.h"
-#include "eqcheck/eqcheck_data.h"
+#include "data/eqcheck_data.h"
 #include <stdlib.h>
 #include <string.h>
 // for print
