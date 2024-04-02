@@ -2,6 +2,7 @@
 /saved_models/
 /nn_from_scratch/hardware/model/
 /nn_from_scratch/hardware/data/
+*.exe
 
 # docs
 docs/site/

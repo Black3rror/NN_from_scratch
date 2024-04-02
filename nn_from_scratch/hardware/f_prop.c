@@ -40,15 +40,16 @@ float *dense(float *input, float *weights, float *biases, float *output, int inp
         for (int j = 0; j < input_size; j++)
         {
             // Index expression to access correct weight connected to neuron
-            
+
 
             // indexing for correct weight
-            sum+=input[j]* weights[i+j*(output_size)]; 
+            sum += input[j] * weights[i + j * output_size];
         }
         // add bias
         sum += biases[i];
         // apply activation
-        output[i] = activation_func(activation, sum);    }
+        output[i] = activation_func(activation, sum);
+    }
     return output;
 }
 
@@ -76,4 +77,3 @@ float *f_prop(float *input, int input_size, int N)
     float *output = f_prop_helper(start_input, input_size, 0, N);
     return output;
 }
-

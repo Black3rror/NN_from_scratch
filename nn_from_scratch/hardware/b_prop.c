@@ -29,7 +29,7 @@ void loss(float predicted, float target)
 void gradient(float predicted, float target, float input)
 {
     float grad = input * (predicted - target); //maybe normalize?
-    
+
     return grad;
 
 }
