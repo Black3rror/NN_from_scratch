@@ -82,11 +82,11 @@ void fc_apply_gradient(ModelPtr *model, int layer, int input_size, int output_si
     for (int i = 0; i < output_size; i++)
     {
         // get sum
-        model->layers_biases[layer][i] -= step_rate * (gradients->biases[layer][i] / n_samples);
+        model->layers_biases[layer][i] += step_rate * (gradients->biases[layer][i] / n_samples);
         for (int j = 0; j < input_size; j++)
         {
             // indexing for correct weight
-            model->layers_weights[layer][i + j * output_size] -= step_rate * (gradients->weights[layer][i + j * output_size] / n_samples);
+            model->layers_weights[layer][i + j * output_size] += step_rate * (gradients->weights[layer][i + j * output_size] / n_samples);
         }
     }
 }
