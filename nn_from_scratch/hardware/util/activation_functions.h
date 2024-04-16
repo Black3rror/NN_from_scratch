@@ -1,4 +1,15 @@
 
+
+#ifndef ACTIVATION_TYPE_H
+#define ACTIVATION_TYPE_H
+enum ActivationType
+{
+    LINEAR,
+    RELU
+};
+#endif
+
 typedef float(*ActivationFunc)(float, int);
-extern float relu(float x, int derivative_flag);
-extern float linear(float x, int derivative_flag);
+float relu(float x, int derivative_flag);
+float linear(float x, int derivative_flag);
+ActivationFunc getActivationFunc(enum ActivationType activationType);

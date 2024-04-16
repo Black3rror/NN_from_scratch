@@ -9,7 +9,7 @@
     @result returns output for layer, without activation function applied
 */
 float *fc_forward_prop(float *input, float *weights, float *biases,
-                    int input_size, int output_size, ActivationFunc activation_func, float* neurons)
+                    int input_size, int output_size, ActivationFunc activation_func)
 {
     float *output = (float *)malloc(output_size * sizeof(float));
     for (int i = 0; i < output_size; i++)
@@ -19,15 +19,12 @@ float *fc_forward_prop(float *input, float *weights, float *biases,
         for (int j = 0; j < input_size; j++)
         {
             // indexing for correct weight
-            sum += input[j] * weights[i + j * output_size];
+            sum += activation_func(input[j],0) * weights[i + j * output_size];
         }
         // add bias
         sum += biases[i];
-        output[i] = activation_func(sum, 0);
+        output[i] = sum;
 
-        if (neurons != NULL){
-            neurons[i] = sum;
-        }
     }
     return output;
 }

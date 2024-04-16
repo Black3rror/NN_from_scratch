@@ -21,3 +21,19 @@ float linear(float x, int derivative_flag)
     else
         return x;
 }
+
+
+ActivationFunc getActivationFunc(enum ActivationType activationType)
+{
+    switch (activationType)
+    {
+    case RELU:
+        return relu;
+
+    case LINEAR:
+        return linear;
+    default:
+        printf("Error unknown activation type... defaulting to LINEAR");
+        return linear;
+    }
+}
