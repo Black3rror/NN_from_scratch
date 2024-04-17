@@ -10,19 +10,19 @@
 
 #include "data/eqcheck_data.h"
 
-/*
-    if training flag is set and gradient is not NULL,
-              gradients will be updated for training
-
+/* Fully connected model functionality, does forward propagation,
+    backpropagation with training flag is set
+    @return predicted output or NULL if training.
 */
-
 float *fc_model(float *input_, ModelPtr *model, int training_flag, float *predicted, Gradients *gradients)
 {
-    // forward propagate through each layer
+
     float *input = malloc(model->input_size * sizeof(float));
     memcpy(input, input_, model->input_size * sizeof(float)); // copy input, so the initial input does not get free'd
     int size = model->input_size;
-    ActivationFunc func = &linear;
+    ActivationFunc func = &linear; // input activation func is set to linear
+
+    // forward propagate through each layer
     for (int i = 0; i < model->n_layers; i++)
     {
 
@@ -58,9 +58,7 @@ float *fc_model(float *input_, ModelPtr *model, int training_flag, float *predic
 
         gradients->neurons[model->n_layers - 1][i] = loss_deriv * func(gradients->neurons[model->n_layers - 1][i], 1);
     }
-
     // perform backprop
-
     for (int i = model->n_layers - 1; i > 0; i--)
     {
         fc_back_prop(gradients->neurons[i], gradients->neurons[i - 1], model->layers_weights[i], model->layers_biases[i],
@@ -116,6 +114,7 @@ Gradients *allocate_gradients(ModelPtr *model)
 
     return gradients;
 }
+/* Free's allocated memory for gradient*/
 void free_gradients(Gradients *gradients, ModelPtr *model)
 {
 
@@ -123,6 +122,7 @@ void free_gradients(Gradients *gradients, ModelPtr *model)
     {
         free(gradients->biases[i]);
         free(gradients->weights[i]);
+        free(gradients->neurons[i]);
     }
     free(gradients->biases);
     free(gradients->weights);
@@ -146,11 +146,10 @@ void fc_model_training(ModelPtr *model, float (*samples_x)[model->output_size], 
         fc_apply_gradient(model, i, size, model->layers_size[i], gradients, n_samples, step_rate);
         size = model->layers_size[i];
     }
-
-    // TODO destroy gradient
     free_gradients(gradients, model);
 }
 
+/* Model prediction */
 float *fc_model_predict(ModelPtr *model, float *input)
 {
     float *output = fc_model(input, model, 0, NULL, NULL);
