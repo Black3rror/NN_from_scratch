@@ -1,4 +1,5 @@
 /* Loss function MSE*/
+
 float MSE(float *predicted, float *actual, int size)
 {
     float error = 0.0;

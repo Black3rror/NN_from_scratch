@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include "config.h"
 /* Back propagation function for one layer, updates the output neurons with gradients
     @param input_gradient: pointer to input gradients (going backwards)
     @param output: pointer to stored neruon values (without activation applied), will be updated to gradients

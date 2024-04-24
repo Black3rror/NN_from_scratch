@@ -2,9 +2,12 @@
 #include "forward_prop.h"
 #include <stdlib.h>
 #include <string.h>
-// for print
 #include <stdio.h>
 
+#include "config.h"
+#ifdef TRACK_MEMORY
+#include "track_memory.h"
+#endif
 /* forward propagation
     @result returns output for layer, without activation function applied
 

@@ -1,14 +1,8 @@
 
-#include "model_fc.h"
-// std
-#include <stdint.h>
-#include <stdlib.h>
 #include <string.h>
-#include <math.h>
-// for print
-#include <stdio.h>
-
-#include "data/eqcheck_data.h"
+#include <stdlib.h>
+#include "model_fc.h"
+#include "util/config.h"
 
 /* Fully connected model functionality, does forward propagation,
     backpropagation with training flag is set
@@ -16,9 +10,17 @@
 */
 float *fc_model(float *input_, ModelPtr *model, int training_flag, float *predicted, Gradients *gradients)
 {
+    float *input;
+    if (!training_flag) // copy input, so the initial input does not get free'd
+    {
+        input = malloc(model->input_size * sizeof(float));
+        memcpy(input, input_, model->input_size * sizeof(float));
+    }
+    else // Otherwise allocating memory is not needed
+    {
+        input = input_;
+    }
 
-    float *input = malloc(model->input_size * sizeof(float));
-    memcpy(input, input_, model->input_size * sizeof(float)); // copy input, so the initial input does not get free'd
     int size = model->input_size;
     ActivationFunc func = &linear; // input activation func is set to linear
 
@@ -50,9 +52,9 @@ float *fc_model(float *input_, ModelPtr *model, int training_flag, float *predic
     }
 
     // if training flag do backpropagate
-
     // start getting error derivative and overwrite last layer neurons with gradients
     float loss_deriv = MSE_Derivative(predicted, input, model->layers_size[model->n_layers - 1]); // last layer size is output size
+
     for (int i = 0; i < model->layers_size[model->n_layers - 1]; i++)
     {
 
@@ -122,12 +124,19 @@ void free_gradients(Gradients *gradients, ModelPtr *model)
     {
         free(gradients->biases[i]);
         free(gradients->weights[i]);
-        free(gradients->neurons[i]);
+        // free(gradients->neurons[i]);
     }
     free(gradients->biases);
     free(gradients->weights);
     free(gradients->neurons);
     free(gradients);
+}
+void free_neurons(Gradients *gradients, ModelPtr *model)
+{
+    for (int i = 0; i < model->n_layers; i++)
+    {
+        free(gradients->neurons[i]);
+    }
 }
 /* train fully connected layer for x amount of samples*/
 void fc_model_training(ModelPtr *model, float (*samples_x)[model->output_size], float (*samples_y)[model->output_size], int n_samples, float step_rate)
@@ -138,6 +147,7 @@ void fc_model_training(ModelPtr *model, float (*samples_x)[model->output_size], 
     for (int i = 0; i < n_samples; i++)
     {
         fc_model(samples_x[i], model, 1, samples_y[i], gradients);
+        free_neurons(gradients, model);
     }
     // loop over the gradients and apply step
     int size = model->input_size;
@@ -153,5 +163,6 @@ void fc_model_training(ModelPtr *model, float (*samples_x)[model->output_size], 
 float *fc_model_predict(ModelPtr *model, float *input)
 {
     float *output = fc_model(input, model, 0, NULL, NULL);
+
     return output;
 }

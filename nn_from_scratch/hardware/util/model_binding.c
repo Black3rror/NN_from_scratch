@@ -1,5 +1,10 @@
 #include "model_binding.h"
 #include <stdlib.h>
+
+#include "config.h"
+#ifdef TRACK_MEMORY
+#include "track_memory.h"
+#endif
 /* Sets values for a model */
 void setModel(ModelPtr *model, int n_layers, int input_size, int output_size, int *layers_size, float **layers_weights,
               float **layers_biases, enum ActivationType *layers_activation)
