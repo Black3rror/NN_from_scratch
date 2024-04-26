@@ -1,0 +1,2 @@
+#define ENABLE_TRACK_MEMORY
+// #define MAX_BLOCKS 100
