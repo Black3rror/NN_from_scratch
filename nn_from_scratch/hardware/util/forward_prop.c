@@ -2,14 +2,24 @@
 #include "forward_prop.h"
 #include <stdlib.h>
 #include <string.h>
-// for print
 #include <stdio.h>
 
+#include "config.h"
+#ifdef TRACK_MEMORY
+#include "track_memory.h"
+#endif
 /* forward propagation
     @result returns output for layer, without activation function applied
+
+    @param input: input pointer for the layer
+    @param weights: weights pointer for the layer
+    @param biases: biases pointer  for the layer
+    @param input_size: size of the input for the layer
+    @param output_size: size of the output for the layer
+    @param activation_func: activation function for the input layer
 */
 float *fc_forward_prop(float *input, float *weights, float *biases,
-                    int input_size, int output_size, ActivationFunc activation_func, float* neurons)
+                       int input_size, int output_size, ActivationFunc activation_func)
 {
     float *output = (float *)malloc(output_size * sizeof(float));
     for (int i = 0; i < output_size; i++)
@@ -19,17 +29,11 @@ float *fc_forward_prop(float *input, float *weights, float *biases,
         for (int j = 0; j < input_size; j++)
         {
             // indexing for correct weight
-            sum += input[j] * weights[i + j * output_size];
+            sum += activation_func(input[j], 0) * weights[i + j * output_size];
         }
         // add bias
         sum += biases[i];
-        output[i] = activation_func(sum, 0);
-
-        if (neurons != NULL){
-            neurons[i] = sum;
-        }
+        output[i] = sum;
     }
     return output;
 }
-
-
