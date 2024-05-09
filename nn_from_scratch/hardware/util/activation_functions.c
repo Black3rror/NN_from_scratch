@@ -33,7 +33,7 @@ ActivationFunc getActivationFunc(enum ActivationType activationType)
     case LINEAR:
         return linear;
     default:
-        printf("Error unknown activation type... defaulting to LINEAR");
+        printf("Error unknown activation type... defaulting to LINEAR\n");
         return linear;
     }
 }

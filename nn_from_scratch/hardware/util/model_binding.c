@@ -1,11 +1,11 @@
 #include "model_binding.h"
 #include <stdlib.h>
+#include <stdio.h>
+/*
+    Model binding is excluded from memory tracking.
 
-#include "config.h"
-#ifdef TRACK_MEMORY
-#include "track_memory.h"
-#endif
-/* Sets values for a model */
+*/
+/* binds values for a model to a modelPtr */
 void setModel(ModelPtr *model, int n_layers, int input_size, int output_size, int *layers_size, float **layers_weights,
               float **layers_biases, enum ActivationType *layers_activation)
 {
@@ -28,15 +28,10 @@ ModelPtr *createAndSetModel(int n_layers, int input_size, int output_size, int *
     return model;
 }
 
-/* Frees a model, together with all the layers*/
-void destroyModel(ModelPtr *model)
+/* Frees a model, should especially be used when tracking memory. As the model binding is excluded from memory tracking */
+void freeModel(ModelPtr *model)
 {
-    // Free memory for layers
-    free(model->layers_size);
-    free(model->layers_weights);
-    free(model->layers_biases);
-    free(model->layers_activation);
-
-    // Free memory for the ModelPtr struct
     free(model);
 }
+
+

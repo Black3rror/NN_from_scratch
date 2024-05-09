@@ -13,7 +13,7 @@ size_t peak_allocated;
 
 int num_blocks = 0;
 int occupied_blocks = 0;
-
+struct MemoryBlock memoryBlocks[MAX_BLOCKS];
 // Custom memory allocation functions
 
 /*
@@ -36,6 +36,11 @@ void *tracked_malloc(size_t size)
             occupied_blocks++;
             num_blocks++;
             total_allocated += size;
+
+            if (total_allocated - total_freed > peak_allocated)
+            {
+                peak_allocated = total_allocated - total_freed;
+            }
         }
     }
     return ptr;
@@ -53,6 +58,7 @@ void *tracked_calloc(size_t num, size_t size)
         }
         else
         {
+
             memoryBlocks[num_blocks].ptr = ptr;
             memoryBlocks[num_blocks].size = size * num;
             memoryBlocks[num_blocks].freed = 0;
@@ -60,6 +66,11 @@ void *tracked_calloc(size_t num, size_t size)
             num_blocks++;
 
             total_allocated += size * num;
+
+            if (total_allocated - total_freed > peak_allocated)
+            {
+                peak_allocated = total_allocated - total_freed;
+            }
         }
     }
     return ptr;
@@ -71,18 +82,35 @@ void tracked_free(void *ptr)
     {
         if (memoryBlocks[i].ptr == ptr && memoryBlocks[i].freed == 0)
         {
-            if (total_allocated - total_freed > peak_allocated)
-            {
-                peak_allocated = total_allocated - total_freed;
-            }
             free(ptr);
             memoryBlocks[i].freed = 1;
             total_freed += memoryBlocks[i].size;
             occupied_blocks--;
+
+            if (total_allocated - total_freed > peak_allocated)
+            {
+                peak_allocated = total_allocated - total_freed;
+            }
+
             return;
         }
     }
     printf("Error: Attempted to free unallocated memory at address %p\n", ptr);
+}
+
+/* Will reset memory tracking numbers, if everything is freed*/
+void reset_memory_tracking()
+{
+    if (occupied_blocks != 0)
+    {
+        printf("Error: Could not reset memory tracking, blocks still being used! \n");
+        return;
+    }
+    total_allocated = 0;
+    total_freed = 0;
+    num_blocks = 0;
+    occupied_blocks = 0;
+    peak_allocated = 0;
 }
 void print_memory()
 {
