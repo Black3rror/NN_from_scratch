@@ -1,6 +1,3 @@
-
-/* Memory tracking configs*/
-
 #include "../settings/user_settings.h"
 #ifdef ENABLE_TRACK_MEMORY
 #include "track_memory.h"
@@ -10,9 +7,6 @@
 #define MAX_BLOCKS 2500
 #endif
 
-/*                         */
-
-/*    PARAMETERS           */
 #ifndef BATCH_SIZE
 #define BATCH_SIZE 64
 #endif
@@ -24,5 +18,3 @@
 #ifndef LEARNING_RATE
 #define LEARNING_RATE 0.001
 #endif
-
-/*                         */

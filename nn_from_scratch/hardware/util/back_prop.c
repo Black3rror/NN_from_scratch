@@ -1,14 +1,7 @@
-/*
-    C file for back propagation
-
-    Idea to reuse Neuron map for activations for gradients when backpropagating.
-    Overwrite the activations with the gradients when going back.
-*/
 #include "back_prop.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-
 #include "config.h"
 /* Back propagation function for one layer, updates the output neurons with gradients
     @param input_gradient: pointer to input gradients (going backwards)
@@ -22,7 +15,7 @@
     @return nothing
 */
 void fc_back_prop(float *input_gradient, float *net_inputs, float *weights,
-                  int input_size, int net_inputs_size, ActivationFunc activation_func,
+                  int input_size, int net_inputs_size, ActivationFunc activation_func, ActivationFunc activation_func_deriv,
                   float *gradient_weights, float *gradient_biases)
 {
     float *temp = calloc(net_inputs_size, sizeof(float));
@@ -37,7 +30,7 @@ void fc_back_prop(float *input_gradient, float *net_inputs, float *weights,
         for (int j = 0; j < net_inputs_size; j++)
         {
             // adding gradient weights
-            gradient_weights[i + j * input_size] += gradient * activation_func(net_inputs[j], 0);
+            gradient_weights[i + j * input_size] += gradient * activation_func(net_inputs[j]);
             // gradient neuron
 
             temp[j] += weights[i + j * input_size] * gradient;
@@ -47,7 +40,7 @@ void fc_back_prop(float *input_gradient, float *net_inputs, float *weights,
     // gradients for next layer
     for (int j = 0; j < net_inputs_size; j++)
     {
-        net_inputs[j] = temp[j] * activation_func(net_inputs[j], 1);
+        net_inputs[j] = temp[j] * activation_func_deriv(net_inputs[j]);
     }
 
     free(temp);
@@ -91,7 +84,7 @@ float *light_fc_back_prop(float *input_gradient, float *weights,
  */
 void specific_fc_back_prop(float *input_gradient, float *net_input,
                            int layer_size, ActivationFunc activation_func,
-                           float *gradient_weights, float *gradient_biases, int n_neurons, int offset)
+                           float *gradient_weights, float *gradient_biases, int n_neurons)
 {
     for (int i = 0; i < layer_size; i++)
     {
@@ -103,7 +96,7 @@ void specific_fc_back_prop(float *input_gradient, float *net_input,
         for (int j = 0; j < n_neurons; j++)
         {
             // adding gradient weights
-            gradient_weights[i + j * layer_size] += gradient * activation_func(net_input[j], 0);
+            gradient_weights[i + j * layer_size] += gradient * activation_func(net_input[j]);
             // gradient biases for prev
         }
     }

@@ -1,0 +1,10 @@
+CHECK Removing max memory blocks
+CHECK using boolean for MemoryBlock.freed instead of int
+CHECK create a makefile (important) 
+in activation_functions.c, we are if checking for each operation which slows down the computation (important)
+in forward_prop.c, line 32, we have the overload of calling a function. (not sure how to solve, but it's important to solve. please think about it and see if you can find a convenient solution)
+in loss_functions.c, diff should be the absolute value as we dicussed previously (important)
+in loss_functions.c, there is no need of defining diff (an overhead), and we could directly add a number to error. probably compiler optimizations will merge those steps for us
+suggestion: make a dummy 2 layer model with 2 neurons in each layer. give it a dummy input and a dummy expected output. compute the gradients with hand and with code and compare them. you can do the same for partial update as well. (important)
+have test units in "tests" folder
+CHECK Enjoy coding :-) (important)

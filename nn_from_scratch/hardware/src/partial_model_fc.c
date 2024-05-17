@@ -1,4 +1,3 @@
-
 #include <stdlib.h>
 #include <string.h>
 #include "../util/forward_prop.h"
@@ -13,13 +12,14 @@
     Calculates partial gradients, meaning it will store the gradients for the target layer and activation for the previous neurons
     given n_weights and offset.
 */
-void partial_calc_gradients(float *input, ModelPtr *model, int target_layer, int n_weights, int offset, float *actual, PartialGradients *gradients)
+void partial_calc_gradients(float *input, Model *model, int target_layer, int n_weights, int offset, float *actual, PartialGradients *gradients)
 {
 
     float *curr_in = input;
     float *output;
     int size = model->input_size;
     ActivationFunc func = &linear; // input activation func is set to linear
+    ActivationFunc func_deriv = &linear_deriv;
     size = model->layers_size[0];
 
     for (int i = 0; i < model->n_layers; i++)
@@ -46,20 +46,21 @@ void partial_calc_gradients(float *input, ModelPtr *model, int target_layer, int
         { // else only store derivative of the input
             for (int j = 0; j < model->layers_size[i]; j++)
             {
-                gradients->deriv_activations[i - target_layer][j] = (uint8_t)func(output[j], 1);
+                gradients->deriv_activations[i - target_layer][j] = (uint8_t)func_deriv(output[j]);
             }
         }
         curr_in = output;
         size = model->layers_size[i];
-        func = getActivationFunc(model->layers_activation[i]);
+        func = get_activation_func(model->layers_activation[i]);
+        func_deriv = get_activation_func_deriv(model->layers_activation[i]);
     }
-    float loss_deriv = MSE_Derivative(curr_in, actual, model->layers_size[model->n_layers - 1]);
+    float loss_deriv = MSE_derivative(curr_in, actual, model->layers_size[model->n_layers - 1]);
 
     /* use new backprop until target layer the use normal backprop for that layer only.*/
 
     for (int i = 0; i < model->layers_size[model->n_layers - 1]; i++)
     {
-        curr_in[i] = loss_deriv * func(curr_in[i], 1);
+        curr_in[i] = loss_deriv * func_deriv(curr_in[i]);
     }
     // perform packprop using the backprop that uses the stored derivative activation values until target layer
     for (int i = model->n_layers - 1; i > target_layer; i--)
@@ -73,10 +74,10 @@ void partial_calc_gradients(float *input, ModelPtr *model, int target_layer, int
     func = &linear;
     if (target_layer != 0)
     {
-        func = getActivationFunc(model->layers_activation[target_layer - 1]);
+        func = get_activation_func(model->layers_activation[target_layer - 1]);
     }
     specific_fc_back_prop(curr_in, gradients->net_input, model->layers_size[target_layer],
-                          func, gradients->weights, gradients->biases, n_weights, offset);
+                          func, gradients->weights, gradients->biases, n_weights);
 
     free(curr_in);
 
@@ -84,7 +85,7 @@ void partial_calc_gradients(float *input, ModelPtr *model, int target_layer, int
 }
 
 /* Apply gradients to a layer, given specific neurons*/
-void fc_apply_specific_gradients(ModelPtr *model, int layer, int layer_size, int prev_layer_size, int n_weights, int offset, PartialGradients *gradients)
+void fc_apply_specific_gradients(Model *model, int layer, int layer_size, int n_weights, int offset, PartialGradients *gradients)
 {
     for (int i = 0; i < layer_size; i++)
     {
@@ -101,7 +102,7 @@ void fc_apply_specific_gradients(ModelPtr *model, int layer, int layer_size, int
     this will result in each given neurons incomming weight being trained
     etc. n_weights = 1 and offset =1, will result in each neurons second weight being trained
  */
-void fc_model_train_partial_layer(ModelPtr *model, float (*samples_x)[model->output_size], float (*samples_y)[model->output_size],
+void fc_model_train_partial_layer(Model *model, float (*samples_x)[model->output_size], float (*samples_y)[model->output_size],
                                   int target_layer, int n_weights, int offset)
 {
     if ((target_layer == 0 && n_weights != 1 && offset != 0) || target_layer < 0 || offset < 0 || n_weights < 1)
@@ -119,23 +120,16 @@ void fc_model_train_partial_layer(ModelPtr *model, float (*samples_x)[model->out
 
     for (int i = 0; i < BATCH_SIZE; i++)
     {
-        partial_calc_gradients(samples_x[BATCH_SIZE + i], model, target_layer, n_weights, offset, samples_y[BATCH_SIZE + i], gradients);
+        partial_calc_gradients(samples_x[i], model, target_layer, n_weights, offset, samples_y[i], gradients);
     }
 
     // apply the calculated gradient to the specific layer
-    if (target_layer == 0)
-    {
-        fc_apply_specific_gradients(model, target_layer, model->layers_size[target_layer], model->input_size, n_weights, offset, gradients);
-    }
-    else
-    {
-        fc_apply_specific_gradients(model, target_layer, model->layers_size[target_layer], model->layers_size[target_layer - 1], n_weights, offset, gradients);
-    }
+    fc_apply_specific_gradients(model, target_layer, model->layers_size[target_layer], n_weights, offset, gradients);
     free_partial_gradients(gradients, model, target_layer);
 }
 
 /* train a specific layer*/
-void fc_model_train_layer(ModelPtr *model, float (*samples_x)[model->output_size], float (*samples_y)[model->output_size],
+void fc_model_train_layer(Model *model, float (*samples_x)[model->output_size], float (*samples_y)[model->output_size],
                           int target_layer)
 {
 
@@ -153,17 +147,8 @@ void fc_model_train_layer(ModelPtr *model, float (*samples_x)[model->output_size
     PartialGradients *gradients = (PartialGradients *)allocate_partial_gradients(model, target_layer, n_weights);
     for (int i = 0; i < BATCH_SIZE; i++)
     {
-        partial_calc_gradients(samples_x[BATCH_SIZE + i], model, target_layer, n_weights, offset, samples_y[BATCH_SIZE + i], gradients);
+        partial_calc_gradients(samples_x[i], model, target_layer, n_weights, offset, samples_y[i], gradients);
     }
-
-    // apply the calculated gradient to the specific layer
-    if (target_layer == 0)
-    {
-        fc_apply_specific_gradients(model, target_layer, model->layers_size[target_layer], model->input_size, n_weights, offset, gradients);
-    }
-    else
-    {
-        fc_apply_specific_gradients(model, target_layer, model->layers_size[target_layer], model->layers_size[target_layer - 1], n_weights, offset, gradients);
-    }
+    fc_apply_specific_gradients(model, target_layer, model->layers_size[target_layer], n_weights, offset, gradients);
     free_partial_gradients(gradients, model, target_layer);
 }

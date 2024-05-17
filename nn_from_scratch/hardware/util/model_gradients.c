@@ -1,7 +1,7 @@
-
+#include <stdlib.h>
 #include "config.h"
 #include "model_gradients.h"
-Gradients *allocate_gradients(ModelPtr *model)
+Gradients *allocate_gradients(Model *model)
 {
     Gradients *gradients = (Gradients *)malloc(sizeof(Gradients));
 
@@ -28,7 +28,7 @@ Gradients *allocate_gradients(ModelPtr *model)
     return gradients;
 }
 /* Free's allocated memory for gradient*/
-void free_gradients(Gradients *gradients, ModelPtr *model)
+void free_gradients(Gradients *gradients, Model *model)
 {
 
     for (int i = 0; i < model->n_layers; i++)
@@ -43,7 +43,7 @@ void free_gradients(Gradients *gradients, ModelPtr *model)
     free(gradients);
 }
 
-PartialGradients *allocate_partial_gradients(ModelPtr *model, int target_layer, int n_neurons)
+PartialGradients *allocate_partial_gradients(Model *model, int target_layer, int n_neurons)
 {
     PartialGradients *gradients = (PartialGradients *)malloc(sizeof(PartialGradients));
 
@@ -61,7 +61,7 @@ PartialGradients *allocate_partial_gradients(ModelPtr *model, int target_layer, 
     return gradients;
 }
 
-void free_partial_gradients(PartialGradients *gradients, ModelPtr *model, int target_layer)
+void free_partial_gradients(PartialGradients *gradients, Model *model, int target_layer)
 {
     free(gradients->biases);
     free(gradients->weights);

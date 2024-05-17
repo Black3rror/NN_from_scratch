@@ -5,8 +5,8 @@
     Model binding is excluded from memory tracking.
 
 */
-/* binds values for a model to a modelPtr */
-void setModel(ModelPtr *model, int n_layers, int input_size, int output_size, int *layers_size, float **layers_weights,
+/* binds values for a model to a Model */
+void setModel(Model *model, int n_layers, int input_size, int output_size, int *layers_size, float **layers_weights,
               float **layers_biases, enum ActivationType *layers_activation)
 {
     model->layers_biases = layers_biases;
@@ -18,20 +18,18 @@ void setModel(ModelPtr *model, int n_layers, int input_size, int output_size, in
     model->output_size = output_size;
 }
 
-/* Create ModelPtr and sets the model*/
-ModelPtr *createAndSetModel(int n_layers, int input_size, int output_size, int *layers_size, float **layers_weights,
-                            float **layers_biases, enum ActivationType *layers_activation)
+/* Create Model and sets the model*/
+Model *createAndSetModel(int n_layers, int input_size, int output_size, int *layers_size, float **layers_weights,
+                         float **layers_biases, enum ActivationType *layers_activation)
 {
-    ModelPtr *model = (ModelPtr *)malloc(sizeof(ModelPtr));
+    Model *model = (Model *)malloc(sizeof(Model));
     setModel(model, n_layers, input_size, output_size, layers_size, layers_weights, layers_biases, layers_activation);
 
     return model;
 }
 
 /* Frees a model, should especially be used when tracking memory. As the model binding is excluded from memory tracking */
-void freeModel(ModelPtr *model)
+void freeModel(Model *model)
 {
     free(model);
 }
-
-

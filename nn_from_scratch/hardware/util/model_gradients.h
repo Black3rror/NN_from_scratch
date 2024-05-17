@@ -20,10 +20,10 @@ typedef struct
     uint8_t **deriv_activations;
 } PartialGradients;
 
-Gradients *allocate_gradients(ModelPtr *model);
-void free_gradients(Gradients *gradients, ModelPtr *model);
+Gradients *allocate_gradients(Model *model);
+void free_gradients(Gradients *gradients, Model *model);
 
-PartialGradients *allocate_partial_gradients(ModelPtr *model, int target_layer, int n_neurons);
-void free_partial_gradients(PartialGradients *gradients, ModelPtr *model, int target_layer);
+PartialGradients *allocate_partial_gradients(Model *model, int target_layer, int n_neurons);
+void free_partial_gradients(PartialGradients *gradients, Model *model, int target_layer);
 
 #endif
