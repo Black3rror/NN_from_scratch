@@ -3,27 +3,25 @@
 #include <stdio.h>
 
 /* Activation functions */
-float relu(float x, int derivative_flag)
+float relu(float x)
 {
-    if (derivative_flag)
-    {
-        return (x > 0) ? 1 : 0;
-    }
-    else
-        return (x > 0) ? x : 0;
+    return (x > 0) ? x : 0;
 }
-float linear(float x, int derivative_flag)
+float linear(float x)
 {
-    if (derivative_flag)
-    {
-        return 1;
-    }
-    else
-        return x;
+    return x;
 }
 
+float relu_deriv(float x)
+{
+    return (x > 0) ? 1 : 0;
+}
+float linear_deriv(__attribute__((unused)) float x)
+{
+    return 1;
+}
 
-ActivationFunc getActivationFunc(enum ActivationType activationType)
+ActivationFunc get_activation_func(enum ActivationType activationType)
 {
     switch (activationType)
     {
@@ -33,7 +31,22 @@ ActivationFunc getActivationFunc(enum ActivationType activationType)
     case LINEAR:
         return linear;
     default:
-        printf("Error unknown activation type... defaulting to LINEAR");
+        printf("Error unknown activation type: defaulting to LINEAR\n");
         return linear;
+    }
+}
+
+ActivationFunc get_activation_func_deriv(enum ActivationType activationType)
+{
+    switch (activationType)
+    {
+    case RELU:
+        return relu_deriv;
+
+    case LINEAR:
+        return linear_deriv;
+    default:
+        printf("Error unknown activation type: defaulting to LINEAR DERIVATIVE\n");
+        return linear_deriv;
     }
 }
