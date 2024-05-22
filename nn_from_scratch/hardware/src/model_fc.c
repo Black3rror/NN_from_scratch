@@ -59,17 +59,12 @@ void fc_apply_gradient(Model *model, int layer, int layer_size, int prev_layer_s
 {
     for (int i = 0; i < layer_size; i++)
     {
-        // get sum
-        printf("bias gradient %d = %f \n", i, gradients->biases[layer][i]);
         model->layers_biases[layer][i] -= LEARNING_RATE * (gradients->biases[layer][i] / BATCH_SIZE);
         for (int j = 0; j < prev_layer_size; j++)
         {
-            // indexing for correct weight
-            printf("weight gradient %d = %f \n", i + j * layer_size, gradients->weights[layer][i + j * layer_size]);
             model->layers_weights[layer][i + j * layer_size] -= LEARNING_RATE * (gradients->weights[layer][i + j * layer_size] / BATCH_SIZE);
         }
     }
-    printf("\n");
 }
 
 /* train fully connected layer for batch_size amount of samples*/
@@ -104,7 +99,6 @@ float *fc_model_predict(Model *model, float *input)
                                     size, model->layers_size[0], func);
     input = output;
     size = model->layers_size[0];
-    func = get_activation_func(model->layers_activation[1]);
 
     for (int i = 1; i < model->n_layers; i++)
     {
@@ -112,9 +106,10 @@ float *fc_model_predict(Model *model, float *input)
         func = get_activation_func(model->layers_activation[i]);
         output = fc_forward_prop(input, model->layers_weights[i], model->layers_biases[i],
                                  size, model->layers_size[i], func);
+
         free(input);
         input = output;
         size = model->layers_size[i];
     }
-    return output;
+    return input;
 }
